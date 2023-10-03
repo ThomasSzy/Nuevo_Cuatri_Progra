@@ -123,23 +123,19 @@ def promedio(lista: list, key, key2) -> float:
     return promedio
 
 
-
-
-
-
 def contar_colores_personaje(lista: list, key) -> dict:
     # Creamos un diccionario para almacenar las cuentas de cada tipo de color de ojos
     cuentas_colores = {}
 
     for personaje in lista:
         color_personaje = personaje[key]
-        # Obtenemos el color de ojos o "Desconocido" si no está especificado
 
         # Verificamos si el color de ojos ya existe en el diccionario, si no, lo inicializamos en 0
         if color_personaje not in cuentas_colores:
             cuentas_colores[color_personaje] = 0
 
-        cuentas_colores[color_personaje] += 1
+        if color_personaje in cuentas_colores:
+            cuentas_colores[color_personaje] += 1
     return cuentas_colores
 
 
