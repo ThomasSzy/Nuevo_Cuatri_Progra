@@ -123,26 +123,34 @@ def promedio(lista: list, key, key2) -> float:
     return promedio
 
 
-def contar_colores_personaje(lista: list, key) -> dict:
-    # Creamos un diccionario para almacenar las cuentas de cada tipo de color de ojos
-    cuentas_colores = {}
+def determinar_cuantos_superheroes_tipo(lista: list, key: str) -> str:
+    # J. Determinar cuántos superhéroes tienen cada tipo de color de ojos.
+    # K. Determinar cuántos superhéroes tienen cada tipo de color de pelo.
+    # L. Determinar cuántos superhéroes tienen cada tipo de inteligencia (En caso de
+    # no tener, Inicializarlo con ‘No Tiene’).
+    diccionario_tipo = {}
+    for superheroe in lista:
+        if superheroe[key] in diccionario_tipo:
+            diccionario_tipo[superheroe[key]] += 1
+        else:
+            if superheroe[key] == "":
+                superheroe[key] = "No tiene"
+            diccionario_tipo[superheroe[key]] = 1
+    superheroes_de_cada_tipo = ""
+    for tipo in diccionario_tipo:
+        cantidad_superheroes = diccionario_tipo[tipo]
+        superheroes_de_cada_tipo += (
+            f"Hay {cantidad_superheroes} superheroes de tipo {key} = {tipo}\n"
+        )
 
-    for personaje in lista:
-        color_personaje = personaje[key]
-
-        # Verificamos si el color de ojos ya existe en el diccionario, si no, lo inicializamos en 0
-        if color_personaje not in cuentas_colores:
-            cuentas_colores[color_personaje] = 0
-
-        if color_personaje in cuentas_colores:
-            cuentas_colores[color_personaje] += 1
-    return cuentas_colores
+    return superheroes_de_cada_tipo
 
 
-# Ejemplo de uso:
+def nombres_personajes(lista, key):
+    nombres_heroes = determinar_cuantos_superheroes_tipo(lista, key)
+    for nombre in nombres_heroes:
+        print(f"asdasdas {nombre}")
 
 
-cuentas_colores_personaje = contar_colores_personaje(lista_personajes, "color_ojos")
-# Imprimimos las cuentas de cada tipo de color de ojos
-for color_personaje, cuenta in cuentas_colores_personaje.items():
-    print(f"Color de ojos: {color_personaje}, Cantidad: {cuenta}")
+# print(determinar_cuantos_superheroes_tipo(lista_personajes, "color_ojos"))
+print(nombres_personajes(lista_personajes, "color_ojos"))

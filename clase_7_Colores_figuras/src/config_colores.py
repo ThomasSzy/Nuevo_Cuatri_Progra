@@ -22,6 +22,20 @@ pos_x = 0
 pos_y = 0
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def color_random(lista_colores):
     from random import randrange
 
