@@ -4,37 +4,10 @@ from sys import *
 from config_colores import *
 from random import randint
 from random import randrange
+from colisiones import *
 
 
 
-
-def detectar_colision(rect_1, rect_2):
-
-    if punto_en_rectangulo(rect_1.topleft, rect_2) or \
-        punto_en_rectangulo(rect_1.topright, rect_2) or \
-        punto_en_rectangulo(rect_1.bottomright, rect_2) or \
-        punto_en_rectangulo(rect_1.bottomright, rect_2) or\
-        punto_en_rectangulo(rect_2.topleft, rect_1) or \
-        punto_en_rectangulo(rect_2.topright, rect_1) or \
-        punto_en_rectangulo(rect_2.bottomright, rect_1) or \
-        punto_en_rectangulo(rect_2.bottomright, rect_1):
-            return True
-    else:
-        return False
-
-
-#Punto dentro de un rectanguulo
-
-
-def punto_en_rectangulo(punto, rect):
-    x = punto[0]
-    y = punto[1]
-    if x >= rect.left and x <= rect.right and y >= rect.top and y <= rect.bottom:
-        return True
-    else:
-        return False
-p1 = (80, 65)
-p2 = (30, 90)
 
 # print(detectar_colision(r1,r2))
 # --> Funcion para diccionario
@@ -48,7 +21,7 @@ def crear_bloque(left = 0, top= 0, ancho= 40, alto= 40, color = (255, 255, 255),
 
 pygame.init()  # --> Conectamos Pygame
 
-clock = pygame.time.Clock()
+
 
 # ----------Titulo----------#
 pygame.display.set_caption("Primer Juego")
@@ -59,27 +32,16 @@ screen = pygame.display.set_mode((size_screen))
 # ----------Colores----------#
 screen.fill((custom))  # --> Red , Green, Blue
 
+#Creo un reloj
+clock = pygame.time.Clock()
 
 
+#Evento personalizado
 
-# Direcciones
+EVENT_NEW_COIN = pygame.USEREVENT + 1
 
-UR = 9
-DR = 3
-DL = 1
-UL = 7
-# Rectangulo
+pygame.time.set_timer(EVENT_NEW_COIN, 3000)
 
-
-block_width = 50
-block_height = 50
-
-speed_x = 5
-speed_y = 5
-
-#-----MONEDAS-----#
-size_coin =  30
-contador_monedas = 0
 
 
 
@@ -87,12 +49,16 @@ fuente = pygame.font.SysFont(None, 48)
 #1)Fuente --> None = Arial
 #2)Tamaño 
 
+texto = fuente.render(f"coins: {contador_monedas}", True, magenta)
+rect_texto = texto.get_rect()
+rect_texto.midtop = (width //2, 30)
 
 block = crear_bloque(left = randint(0, width - block_width),
                     top = randint(0, height - block_height),
                     ancho = block_width,
                     alto = block_height,
-                    color = color_aleatoreo()
+                    color = red,
+                    radio = 25
                     )
 
 #Creamos lista de monedas
@@ -115,11 +81,19 @@ is_ranning = True
 while is_ranning:
     # ----> Tiempo
     clock.tick(FPS)  # -->FPS EN LA LISTA CONFIG
-    # ----> Detecta los elementos
+    # ----> Detecta los eventos
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             is_ranning = False
 
+        if event.type == EVENT_NEW_COIN:
+            coins.append(crear_bloque(left = randint(0, width - size_coin),
+                                top = randint(0, height - size_coin),
+                                ancho = size_coin,
+                                alto = size_coin,
+                                color = magenta,
+                                radio = size_coin // 2 # --> Las hace redondas
+                                ))
     # ----> ACTUALIZA ELEMENTOS
 
     # Controlo rebote y cambio de direccion
@@ -183,7 +157,7 @@ while is_ranning:
 
 
     for coin in coins[ : ]: # ---> Creamo una copia y la modificamos de la lista original
-        if detectar_colision(coin["rect"], block["rect"]):
+        if detectar_colision_circulo(coin["rect"], block["rect"]):
             coins.remove(coin)
             contador_monedas +=1
 
