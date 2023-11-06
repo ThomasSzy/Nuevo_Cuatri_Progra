@@ -25,6 +25,18 @@ def terminar():
     exit()
 
 
+# Pausa
+def wait_user():
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:  # -> Va con from pygame.locals import *
+                terminar()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    terminar()
+                return  # --> Terminamos la Funcion
+
+
 def crear_bloque(
     imagen=None,  # --> Imagen si no la pasan no se coloca
     left=0,
@@ -71,29 +83,13 @@ def load_coins_list(coins, cantidad, imagen=None):
         )
 
 
-def wait_user():
-    while True:
-        for event in event.get():
-            if event.type == QUIT:  # -> Va con from pygame.locals import *
-                terminar()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    terminar()
-                return  # --> Terminamos la Funcion
-
-
-def dibujar_asteroides(suuperficie, coins):
+def dibujar_asteroides(superficie, coins):
     for coin in coins:
-        # pygame.draw.rect(
-        #     screen, coin["color"], coin["rect"], coin["borde"], coin["radio"]
-        # )
-
         if coin["imagen"]:
-            screen.blit(coin["imagen"], coin["rect"])
-
+            superficie.blit(coin["imagen"], coin["rect"])
         else:
             pygame.draw.rect(
-                screen, block["color"], block["rect"], block["borde"], block["radio"]
+                superficie, coin["color"], coin["rect"], coin["borde"], coin["radio"]
             )
 
 
@@ -135,9 +131,10 @@ playing_music = True
 
 image_player = pygame.image.load("./src/imagenes/ovni.png")
 image_asteroid = pygame.image.load("./src/imagenes/asteroid.png")
+image_asteroid_especial = pygame.image.load("./src/imagenes/asteroid_especial.png")
 
 background = pygame.transform.scale(
-    pygame.image.load("./src/imagenes/asteroid.png"), size_screen
+    pygame.image.load("./src/imagenes/Estrellas.jpg"), size_screen
 )
 
 # Evento personalizado
@@ -181,7 +178,7 @@ block = crear_bloque(
 # Creamos lista de monedas
 
 coins = []
-load_coins_list(coins, count_coins)
+load_coins_list(coins, count_coins, image_asteroid)
 # for i in range(25):
 #     coins.append(crear_bloque(left = randint(0, width - size_coin),
 #                                 top = randint(0, height - size_coin),
@@ -244,15 +241,15 @@ while is_ranning:
                 move_down = True
                 move_up = False
 
+            # Pausar Musica
             if event.key == K_m:
                 if playing_music:
                     pygame.mixer.music.pause()
                 else:
                     pygame.mixer.music.unpause()
 
-                playing_music = (
-                    not playing_music
-                )  # --> Esta bandera la usamos para saber si tiene que sonar o no
+                playing_music = not playing_music
+                # --> Esta bandera la usamos para saber si tiene que sonar o no
 
             if event.key == K_p:
                 if playing_music:
@@ -260,7 +257,8 @@ while is_ranning:
                 mostrar_texto(screen, "Pausa", fuente, center_screen, red, black)
                 wait_user()
                 if playing_music:
-                    pygame.mixer.music.unpause
+                    pygame.mixer.music.unpause()
+                
         if event.type == KEYUP:
             # Salir Al soltar el Escape
             if event.key == K_ESCAPE:
@@ -341,9 +339,14 @@ while is_ranning:
             rect_texto = texto.get_rect()
             rect_texto.midtop = (width // 2, 30)
             cont_grande = 10
-            coin_sound.play()
+
+            # Pausar efectos de coins
+
+            if playing_music:
+                coin_sound.play()
+
             if len(coins) == 0:
-                load_coins_list(coins, count_coins, image_asteroid)
+                load_coins_list(coins, count_coins, image_asteroid_especial)
                 end_level_sound.play()
 
     if cont_grande > 0:
@@ -357,9 +360,10 @@ while is_ranning:
         block["color"] = red
 
     # ----> Dibujar Pantalla
-
     # screen.fill(black)
     screen.blit(background, origin)
+
+    dibujar_asteroides(screen, coins)
 
     screen.blit(block["imagen"], block["rect"])
     screen.blit(texto, rect_texto)
