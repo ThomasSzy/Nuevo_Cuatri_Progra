@@ -16,8 +16,10 @@ button_quit.center = quit_screen
 button_back = pygame.Rect(0, 0, button_width, button_heigth)
 button_back.center = init_screen
 
-#Botones
+# Botones
 boton_comenzar = pygame.Rect(centro_x - button_width // 2, 300, 200, 50)
 boton_options = pygame.Rect(centro_x - button_width // 2, 400, 200, 50)
 boton_quit = pygame.Rect(centro_x - button_width // 2, 500, 200, 50)
 boton_back = pygame.Rect(centro_x - button_width // 2, 400, 200, 50)
+
+

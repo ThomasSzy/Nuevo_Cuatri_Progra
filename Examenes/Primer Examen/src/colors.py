@@ -1,12 +1,4 @@
 # Colors
-def colors_random():
-    from random import randrange
-
-    r = randrange(256)
-    g = randrange(256)
-    b = randrange(256)
-    return (r, g, b)
-
 
 red = (255, 0, 0)
 green = (0, 255, 0)
